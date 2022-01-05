@@ -7,6 +7,8 @@ public class Main {
     private static int maxSum = 0;
     private static Node maxLeaf = null;
     private static ArrayList<Integer> pathFromMaxToRoot = new ArrayList<>();
+    private static ArrayList<String> path = new ArrayList<>();
+    private static ArrayList<String> temp = new ArrayList<>();
 
     static class Node {
         int data;
@@ -49,9 +51,9 @@ public class Main {
     }
 
     private static Node constructTree(int[][] maze, Node root, int row, int col) {
-        if ((row < maze.length) && (col < maze[0].length)) {
-            Node temp = new Node(maze[row][col]);
-            root = temp;
+        if ((row < maze.length)
+                && (col < maze[0].length)) {
+            root = new Node(maze[row][col]);
             root.left = constructTree(maze, root.left, row, col + 1);
             root.right = constructTree(maze, root.right, row + 1, col);
         }
@@ -85,7 +87,6 @@ public class Main {
         }
         findMaximumPath(root.left, currSum);
         findMaximumPath(root.right, currSum);
-        return;
     }
 
     private static void printPreOder(Node node) {
@@ -106,12 +107,28 @@ public class Main {
 
     private static Boolean getPath(Node root, Node leaf) {
         if (root == null) return false;
-        if ((root == leaf) || getPath(root.left, leaf) || getPath(root.right, leaf)) {
+        if (root == leaf || getPath(root.left,leaf) || getPath(root.right, leaf)) {
             pathFromMaxToRoot.add(root.data);
             return true;
         }
         return false;
     }
+
+    private static void generatePath(Node root) {
+        int size = pathFromMaxToRoot.size();
+        if (root.data != pathFromMaxToRoot.get(pathFromMaxToRoot.size()-1)) return;
+        for(int i = size - 2; i >= 0; i--) {
+            if (root.left.data == pathFromMaxToRoot.get(i)) {
+                path.add("R");
+                root = root.left;
+            } else if (root.right.data == pathFromMaxToRoot.get(i)) {
+                path.add("D");
+                root = root.right;
+            }
+        }
+    }
+
+
 
     public static void main(String[] args) {
         int[][] maze = readFile(newFile);
@@ -132,8 +149,14 @@ public class Main {
         getPath(root, maxLeaf);
         System.out.println("Total steps: " + (pathFromMaxToRoot.size() - 1));
         System.out.print("Path: ");
-        for(int i : pathFromMaxToRoot) {
+
+        for (int i : pathFromMaxToRoot) {
             System.out.print(i + " ");
+        }
+        System.out.println();
+        generatePath(root);
+        for(String s : path) {
+            System.out.print(s + " ");
         }
     }
 }
