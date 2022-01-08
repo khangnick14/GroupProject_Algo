@@ -9,6 +9,7 @@ public class Main {
     private static ArrayList<Integer> pathFromMaxToRoot = new ArrayList<>();
     private static ArrayList<String> path = new ArrayList<>();
     private static ArrayList<String> temp = new ArrayList<>();
+    private static int countNoGold = 0;
 
     static class Node {
         int data;
@@ -36,7 +37,7 @@ public class Main {
                 for (int j = 0; j < col; j++) {
                     if (temp[j].equals(".")) {
                         maze[i][j] = 0;
-                    } else if (temp[j].equals("x")) {
+                    } else if (temp[j].equals("x") || temp[j].equals("X")) {
                         maze[i][j] = -1;
                     } else {
                         maze[i][j] = Integer.parseInt(temp[j]);
@@ -71,14 +72,33 @@ public class Main {
         }
     }
 
+    private static int optimizePath(ArrayList<Integer> path) {
+        int startPoint = 0;
+        for (int i = 0; i < path.size(); i++) {
+            if (path.get(i) != 0) {
+                startPoint = i;
+                break;
+            }
+        }
+        return startPoint;
+    }
+
     private static void findMaximumPath(Node root, int currSum) {
         //base Case
-        if (root == null) {
+        if (root == null || root.data == -1) {
             return;
         }
-        currSum += root.data;
+        if (root.data > 0) {
+            currSum += root.data;
+
+            countNoGold = 0;
+        }
+        if (root.data == 0) {
+            countNoGold++;
+        }
         //check the stop condition
-        if (root.left == null && root.right == null) {
+        if (((root.left == null) || (root.left.data == -1))
+                && ((root.right == null) || (root.right.data == -1))) {
             if (maxSum < currSum) {
                 maxSum = currSum;
                 maxLeaf = root;
@@ -114,16 +134,20 @@ public class Main {
         return false;
     }
 
+
+
     private static void generatePath(Node root) {
         int size = pathFromMaxToRoot.size();
-        if (root.data != pathFromMaxToRoot.get(pathFromMaxToRoot.size()-1)) return;
-        for(int i = size - 2; i >= 0; i--) {
-            if (root.left.data == pathFromMaxToRoot.get(i)) {
-                path.add("R");
-                root = root.left;
-            } else if (root.right.data == pathFromMaxToRoot.get(i)) {
-                path.add("D");
-                root = root.right;
+//        if (root.data != pathFromMaxToRoot.get(pathFromMaxToRoot.size()-1)) return;
+        for(int i = size - 2; i >= optimizePath(pathFromMaxToRoot); i--) {
+            if (root.left != null && root.right != null) {
+                if (pathFromMaxToRoot.get(i) == root.left.data && pathFromMaxToRoot.get(i) != root.right.data) {
+                    path.add("R");
+                    root = root.left;
+                } else {
+                    path.add("D");
+                    root = root.right;
+                }
             }
         }
     }
@@ -147,11 +171,15 @@ public class Main {
         findMaximumPath(root, 0);
         System.out.println("Maximum gold: " + maxSum);
         getPath(root, maxLeaf);
-        System.out.println("Total steps: " + (pathFromMaxToRoot.size() - 1));
+        System.out.println("Total steps: " + (pathFromMaxToRoot.size() - 1 - optimizePath(pathFromMaxToRoot)));
         System.out.print("Path: ");
 
-        for (int i : pathFromMaxToRoot) {
-            System.out.print(i + " ");
+        for (int i = pathFromMaxToRoot.size()-1; i >= optimizePath(pathFromMaxToRoot); i--) {
+            System.out.print(pathFromMaxToRoot.get(i) + " ");
+        }
+        System.out.println();
+        for(Integer s : pathFromMaxToRoot) {
+            System.out.print(s + " ");
         }
         System.out.println();
         generatePath(root);
