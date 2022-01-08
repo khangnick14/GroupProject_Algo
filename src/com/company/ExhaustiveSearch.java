@@ -5,11 +5,13 @@ import java.io.FileNotFoundException;
 import java.sql.Array;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class ExhaustiveSearch {
     static ArrayList<Path> allPath = new ArrayList<>();
     private static File newFile = new File("..\\GroupProject_Algo\\src\\com\\company\\mapName.txt");
+    private static HashMap<Path, Integer> hm = new HashMap<>();
 
     private static int[][] readFile(File file) {
         try {
@@ -42,39 +44,40 @@ public class ExhaustiveSearch {
         int row = maze.length;
         int column = maze[0].length;
         int count = 0;
-        Path solutionPath = new Path(maze[0][0], new ArrayList<String>(), maze);
+        Path solutionPath = new Path(maze[0][0], new ArrayList<String>(), maze, 0, 0);
         //Maximum length of path
         final int MAX_LENGTH = row + column - 2;
         for (int i = 1; i <= MAX_LENGTH; i++) {
             for (int j = 0; j <= Math.pow(2.0, i) - 1; j++) {
+                boolean skipPath = false;
                 ArrayList<String> collectGoldPath = new ArrayList<>();
-                Path path = new Path(maze[0][0], collectGoldPath, maze);
-                int a = 0, b = 0;
-                aa:
+                Path path = new Path(maze[0][0], collectGoldPath, maze, 0, 0);
                 for (int k = 0; k < i; k++) {
+                    if(skipPath) {
+                        continue;
+                    }
                     int temp;
                     temp = (j >> k) & 1;
                     //go Right
                     if (temp == 1) {
-                        if (path.isRightStepValid(a, b)) {
-                            path.getCollectGoldPath().add("R");
-                            b += 1;
-                            path.updateCurrentGold(a, b);
+                        if (path.isRightStepValid()) {
+                            path.updateGoldPath("R");
+                            } else skipPath = true;
                         }
-                    }
                     //go Down
                     else {
-                        if (path.isDownStepValid(a, b)) {
-                            path.getCollectGoldPath().add("D");
-                            a += 1;
-                            path.updateCurrentGold(a, b);
-                        }
+                        if (path.isDownStepValid()) {
+                            path.updateGoldPath("D");
+                        } else skipPath = true;
                     }
                 }
-                if (path.getTotalGold() > solutionPath.getTotalGold()) {
-                    solutionPath = path;
-                    System.out.println(count + ". UPDATED new Solution!!!");
-                    count++;
+                if(!skipPath) {
+                    System.out.println(path.getCollectGoldPath());
+                    if (path.getTotalGold() > solutionPath.getTotalGold()) {
+                        solutionPath = path;
+//                    System.out.println(count + ". UPDATED new Solution!!!");
+                        count++;
+                    }
                 }
             }
         }
