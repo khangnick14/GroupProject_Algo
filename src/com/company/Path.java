@@ -7,7 +7,9 @@ public class Path {
     private ArrayList<String> collectGoldPath;
     private int[][] maze;
 
-    Path() {}
+    Path() {
+    }
+
     Path(int totalGold, ArrayList<String> collectGoldPath, int[][] maze) {
         this.totalGold = totalGold;
         this.collectGoldPath = collectGoldPath;
@@ -19,24 +21,24 @@ public class Path {
     }
 
     public Boolean isRightStepValid(int a, int b) {
-        return b + 1 < maze[0].length && maze[a][b+1] != -1;
+        return b + 1 < maze[0].length && maze[a][b + 1] != -1;
     }
 
-    public void calculateTotalGold(){
+    public void calculateGoldPath() {
+        if (collectGoldPath.size() == 0) return;
         int i = 0, j = 0;
-        for(String s : collectGoldPath) {
-            if(s.equals("R"))
-            {
-                if (isRightStepValid(i,j)) {
-                    totalGold += maze[i][++j];
-                }
-            } else  {
-                if(isDownStepValid(i,j)) {
-                    totalGold += maze[++i][j];
-                }
-            }
+        for (String s : collectGoldPath) {
+            if (s.equals("R")) {
+                totalGold += maze[i][j + 1];
+            } else
+                totalGold += maze[i + 1][j];
         }
     }
+
+    public void updateCurrentGold(int a, int b) {
+        totalGold += maze[a][b];
+    }
+
 
     public int getTotalGold() {
         return totalGold;
@@ -49,4 +51,5 @@ public class Path {
     public int[][] getMaze() {
         return maze;
     }
+
 }
