@@ -31,18 +31,16 @@ public class Path {
     public void updateGoldPath(String s) {
         if (s.equals("R")) {
             collectGoldPath.add("R");
-            totalGold += maze[currRow][currColumn+1];
             currColumn+=1;
+            totalGold+=maze[currRow][currColumn];
+
         } else if (s.equals("D")) {
             collectGoldPath.add("D");
-            totalGold += maze[currRow+1][currColumn];
             currRow+=1;
+//            totalGold+=maze[currRow][currColumn];
         }
     }
 
-    public void updateGold() {
-        totalGold+=maze[currRow][currColumn];
-    }
 
     public int getTotalGold() {
         return totalGold;

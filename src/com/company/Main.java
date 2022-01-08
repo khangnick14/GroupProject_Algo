@@ -44,6 +44,7 @@ public class Main {
                     }
                 }
             }
+            scan.close();
             return maze;
         } catch (FileNotFoundException e) {
             System.out.println("No file found!");
