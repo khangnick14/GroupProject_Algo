@@ -2,10 +2,7 @@ package com.company;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.Array;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class ExhaustiveSearch {
@@ -64,7 +61,7 @@ public class ExhaustiveSearch {
         int row = maze.length;
         int column = maze[0].length;
         //Declare an empty solution path
-        Path solutionPath = new Path(0, new ArrayList<String>(), maze, 0, 0);
+        Path solutionPath = new Path(0, new ArrayList<>(), maze, 0, 0);
 
         //Make sure the starting point is not a rock
         if(maze[0][0] != -1) {
