@@ -3,6 +3,7 @@ package com.company;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class ExhaustiveSearch {
@@ -16,6 +17,12 @@ public class ExhaustiveSearch {
             //Set # of row(s) and column(s)
             int row = Integer.parseInt(arrRow[0]);
             int col = Integer.parseInt(arrRow[1]);
+
+            //check input size
+            if(row > 27 || col > 27) {
+                System.out.println("There is a problem with the input file. The input size cannot be more than 27");
+                return null;
+            }
 
             //Declare 2D array
             int[][] maze = new int[row][col];
@@ -53,7 +60,7 @@ public class ExhaustiveSearch {
         } catch (NumberFormatException numberFormatException) {
             System.out.println("There is a problem with the input file. Invalid number of gold");
             return null;
-        } catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+        } catch (ArrayIndexOutOfBoundsException | NoSuchElementException noSuchElementException) {
             System.out.println("There is a problem with the input file. Invalid size of input matrix");
             return null;
         }
@@ -71,11 +78,10 @@ public class ExhaustiveSearch {
             final int MAX_LENGTH = row + column - 2;
             for (int i = 1; i <= MAX_LENGTH; i++) {
                 //For each number from 0 -> 2^i -1, generate bit strings
-                for (long j = 0; j <= Math.pow(2.0, i) - 1; j++) {
+                for (long j = 0; j <= Math.pow(2, i) - 1; j++) {
                     boolean skipPath = false;
                     //Create a new path object
-                    ArrayList<String> collectGoldPath = new ArrayList<>();
-                    Path path = new Path(maze[0][0], collectGoldPath, maze, 0, 0);
+                    Path path = new Path(0, new ArrayList<>(), maze, 0, 0);
                     for (int k = 0; k < i; k++) {
                         //if the current path is skipped
                         if (skipPath) {

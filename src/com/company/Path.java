@@ -37,10 +37,9 @@ public class Path {
         } else if (s.equals("D")) {
             collectGoldPath.add("D");
             currRow+=1;
-//            totalGold+=maze[currRow][currColumn];
+            totalGold+=maze[currRow][currColumn];
         }
     }
-
 
     public int getTotalGold() {
         return totalGold;
