@@ -26,7 +26,11 @@ public class ExhaustiveSearch {
                 String[] temp = line.split(" ");
                 //Loop each cell and put each to the 2D array
                 for (int j = 0; j < col; j++) {
-                    if (temp[j].equals(".")) {
+                    if(i == 0 && !temp[0].equals(".")) {
+                        System.out.println("There is a problem with the input file. The starting point must be a dot (land)");
+                        return null;
+                    }
+                    else if (temp[j].equals(".")) {
                         maze[i][j] = 0;
                     }
                     else if (temp[j].equals("x") || temp[j].equals("X")) {
@@ -63,8 +67,6 @@ public class ExhaustiveSearch {
         //Declare an empty solution path
         Path solutionPath = new Path(0, new ArrayList<>(), maze, 0, 0);
 
-        //Make sure the starting point is not a rock
-        if(maze[0][0] != -1) {
             //Maximum length of possible paths
             final int MAX_LENGTH = row + column - 2;
             for (int i = 1; i <= MAX_LENGTH; i++) {
@@ -104,7 +106,6 @@ public class ExhaustiveSearch {
                     }
                 }
             }
-        }
         //return the result
         return solutionPath;
     }
